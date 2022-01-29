@@ -1,7 +1,8 @@
 <template>
-
-      <label class="search_input">Sort e-mail</label>
+    <div class="input_wrapp">
+      <label class="search_input"><strong>Sort e-mail</strong></label>
       <input type="text" class="search_form" @keyup="debounceInput" v-model='searchStr'>
+    </div>
   <div class="v-table">
       <div class="v-table__header">
           <p>ID</p>
@@ -31,7 +32,6 @@
           </div>
       </div>
   </div>
-
 </template>
 
 <script>
@@ -74,7 +74,7 @@ export default {
                 return this.$store.getters.getUsersList;
             } else {
                 this.$store.commit('DEBOUNCE_INPUT', this.debounceString)
-                return this.$store.getters.USERS_FILTERED;
+                return this.$store.getters.usersFiltered;
             }
         },
         
@@ -99,7 +99,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.input_wrapp {
+    text-align: center;
+}
 .search_input {
     margin: 5px;
 }

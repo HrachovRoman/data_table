@@ -7,46 +7,26 @@
 </template>
 
 <script>
-// import { defineComponent } from '@vue/composition-api'
-import {mapActions, mapGetters} from 'vuex'
+import {mapGetters} from 'vuex'
 import Table from './components/Table.vue'
 
 export default ({
   name: 'app',
-  data() {
-    return console.log(process.env.VUE_APP_USERS_API)
-  },
   components: {
     Table
   },
-
-  created() {
-    this.$store.dispatch("getUsersFromApi")
-  },
-
   computed: {
     ...mapGetters([
       'getUsersList'
     ])
   },
-  
-
-  // methods: {
-  //   ...mapActions([
-  //     'getUsersFromApi  '
-  //   ])
-  // },
-
-  mounted() {
-    console.log(this.getUsersList)
-    this.getUsersList;
-  }
+  created() {
+    this.$store.dispatch("getUsersFromApi")
+  },
 })
-
 </script>
 
-
-<style  scoped>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -54,16 +34,13 @@ export default ({
   text-align: center;
   color: #2c3e50;
 }
-
 #nav {
   padding: 30px;
 }
-
 #nav a {
   font-weight: bold;
   color: #2c3e50;
 }
-
 #nav a.router-link-exact-active {
   color: #42b983;
 }

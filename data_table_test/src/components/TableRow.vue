@@ -1,5 +1,4 @@
 <template>
-
   <div class="table-row">
       <div class="row row__id">{{row_data.id}}</div>
       <div class="row row__name">{{row_data.name}}</div>
@@ -13,13 +12,11 @@
           >Details</button>
       </div>
   </div>
-  <div>
-  </div>
   <Card 
     v-if="isCardVisible"
     @closeCard='closeDetailsCard'
   >
-  <div class="detail-info">
+    <div class="detail-info">
       <ul><strong>address:</strong> 
           <li>city: {{currentUser.address.city}}</li>
           <li>geo:
@@ -48,8 +45,7 @@
       <ul><strong>website: </strong>
           <a :href="'http://' + currentUser.website" target="_blank">
           {{currentUser.website}}</a> &#8592;Clickable</ul>
-  </div>
-  
+    </div>
   </Card>
 </template>
 
@@ -74,22 +70,22 @@ export default {
     },
     
     methods: {
-    remove (id) {
-        this.$store.commit('REMOVE_ID', id);
-    },
-    showDetails (id) {
-        this.isCardVisible = true;
-        this.currentUser = this.$store.getters.getUsersList.find(user => user.id === id)
-        console.log(this.currentUser);
-    },
-    closeDetailsCard() {
-        this.isCardVisible = false;
+        remove (id) {
+            this.$store.commit('REMOVE_ID', id);
+        },
+        showDetails (id) {
+            this.isCardVisible = true;
+            this.currentUser = this.$store.getters.getUsersList.find(user => user.id === id)
+            console.log(this.currentUser);
+        },
+        closeDetailsCard() {
+            this.isCardVisible = false;
+        }
     }
-}
 }
 </script>
 
-<style>
+<style scoped>
     .table-row {
         display: flex;
         justify-content: space-around;
@@ -107,7 +103,7 @@ export default {
         list-style-position: outside; 
         color: navy; 
         text-align: left;
-   }
+    }
     .bnt-del {
         background-color: white; 
         color: black; 
@@ -124,7 +120,6 @@ export default {
         border: 2px solid #42b983;
         margin: 0 5px;
     }
-
     .btn-details:hover {
         background-color: #42b983;
         color: white;
