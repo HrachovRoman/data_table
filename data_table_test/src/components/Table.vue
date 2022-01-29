@@ -12,6 +12,7 @@
               <i class="material-icons">unfold_more</i>
           </p>
           <p>E-MAIL</p>
+          <p>Options</p>
       </div>
       <div class="v-table__body">
           <TableRow 
@@ -38,48 +39,39 @@ import TableRow from './TableRow'
 import debounce from '../utils/debounce'
 
 export default {
-    name: 'v-table',
+    name: 'Table',
     components: {
         TableRow,
-        debounce
+        debounce,
     },
     props: {
         users_data: {
             type: Array,
-            default: () => {
-                return []
-            }
-        }
+            required: false
+        },
     },
     data() {
         return {
-            users: [],
             usersPerPage: 5,
             pageNumber: 1,
             searchStr: '',
             debounceString: ''
         }
     },
-    //     beforeCreate() {
-    //     console.log(this.users);
-        
-    //     setTimeout(() => {
-    //         this.users = this.$store.getters.USERS
-    //     }, 1000)
-    // },
+
     computed: {
         pages() {
             return Math.ceil(this.users_data.length / 5)
         },
         paginatedUser() {
-            let from = (this.pageNumber - 1) * this.usersPerPage;
+            let from = this.pageNumber * this.usersPerPage;
             let to = from + this.usersPerPage;
             return this.users_data.slice(from, to);
         },
 
         userCards(){
              if (this.debounceString === '') {
-                return this.$store.getters.USERS;
+                return this.$store.getters.getUsersList;
             } else {
                 this.$store.commit('DEBOUNCE_INPUT', this.debounceString)
                 return this.$store.getters.USERS_FILTERED;
@@ -102,13 +94,6 @@ export default {
         sortByUserName() {
             this.users_data.sort((a,b) => a.username.localeCompare(b.username))
         },
-        // debounce(fn, ms = 500) {
-        //     let timeout;
-        //      return () => {
-        //         clearTimeout(timeout);
-        //         timeout = setTimeout(fn, ms)
-        //     }
-        // },
     },
 
 }

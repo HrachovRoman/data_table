@@ -1,7 +1,7 @@
 <template>
   <div id="nav">
   <Table 
-    :users_data = 'USERS'
+    :users_data = 'getUsersList'
   />
   </div>
 </template>
@@ -13,31 +13,40 @@ import Table from './components/Table.vue'
 
 export default ({
   name: 'app',
+  data() {
+    return console.log(process.env.VUE_APP_USERS_API)
+  },
   components: {
     Table
   },
 
+  created() {
+    this.$store.dispatch("getUsersFromApi")
+  },
+
   computed: {
     ...mapGetters([
-      'USERS'
+      'getUsersList'
     ])
   },
+  
 
-  methods: {
-    ...mapActions([
-      'GET_USERS_FROM_API'
-    ])
-  },
+  // methods: {
+  //   ...mapActions([
+  //     'getUsersFromApi  '
+  //   ])
+  // },
 
   mounted() {
-    this.GET_USERS_FROM_API();
+    console.log(this.getUsersList)
+    this.getUsersList;
   }
 })
 
 </script>
 
 
-<style>
+<style  scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
