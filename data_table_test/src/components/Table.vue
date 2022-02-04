@@ -1,139 +1,106 @@
 <template>
-
-      <label class="search_input">Sort e-mail</label>
-      <input type="text" class="search_form" @keyup="debounceInput" v-model='searchStr'>
-  <div class="v-table">
-      <div class="v-table__header">
-          <p>ID</p>
-          <p @click="sortByName">Name
-              <i class="material-icons">unfold_more</i>
-          </p>
-          <p @click="sortByUserName">USERNAME
-              <i class="material-icons">unfold_more</i>
-          </p>
-          <p>E-MAIL</p>
-      </div>
-      <div class="v-table__body">
+    <div class="input_wrapp">
+      <label class="search_input"><strong>Sort e-mail</strong></label>
+      <input type="text" class="search_form" @keyup="debounceInput" v-model='searchStr'> 
+    </div>
+  <table class="table">
+      <thead>
+          <tr>
+            <th>ID</th>
+            <th @click="sortByName()">Name
+                <i class="material-icons">unfold_more</i>
+            </th>
+            <th @click="sortByUserName()">USERNAME
+                <i class="material-icons">unfold_more</i>
+            </th>
+            <th>E-MAIL</th>
+            <th>Options</th>
+          </tr>
+      </thead>
           <TableRow 
-            v-for='row in userCards'
-            :key = 'row.id'
-            :row_data = 'row'
+            :users_data = 'debounceInputEnter'
           />
-      </div>
-      <div class="v-table__pagination">
-          <div class="page" 
-            v-for='page in pages'
-            :key='page'
-            :class="{'page__selected': page === pageNumber}"
-            @click="pageClick(page)"
-          >{{page}}
-          </div>
-      </div>
-  </div>
-
+  </table>
 </template>
 
 <script>
 import TableRow from './TableRow'
 import debounce from '../utils/debounce'
+import {mapGetters} from 'vuex'
 
 export default {
-    name: 'v-table',
+    name: 'Table',
     components: {
         TableRow,
-        debounce
+        debounce,
     },
-    props: {
-        users_data: {
-            type: Array,
-            default: () => {
-                return []
-            }
-        }
+    mounted() {
+        this.$store.dispatch("getUsersFromApi")
     },
     data() {
         return {
-            users: [],
-            usersPerPage: 5,
-            pageNumber: 1,
             searchStr: '',
-            debounceString: ''
+            debounceString: '',
+            sort: true
         }
     },
-    //     beforeCreate() {
-    //     console.log(this.users);
-        
-    //     setTimeout(() => {
-    //         this.users = this.$store.getters.USERS
-    //     }, 1000)
-    // },
     computed: {
-        pages() {
-            return Math.ceil(this.users_data.length / 5)
-        },
-        paginatedUser() {
-            let from = (this.pageNumber - 1) * this.usersPerPage;
-            let to = from + this.usersPerPage;
-            return this.users_data.slice(from, to);
-        },
-
-        userCards(){
-             if (this.debounceString === '') {
-                return this.$store.getters.USERS;
-            } else {
-                this.$store.commit('DEBOUNCE_INPUT', this.debounceString)
-                return this.$store.getters.USERS_FILTERED;
-            }
-        },
-        
+        ...mapGetters({
+            usersList: 'getUsersList'
+        }),
         debounceInput() {
             return debounce((() => this.debounceString = this.searchStr), 1000)
         },
-    },
-    
-    methods: {
-        pageClick(page) {
-            this.pageNumber = page;
+        debounceInputEnter() {
+            if (!this.debounceString) return this.usersList;
+            return this.usersList.filter(el => el.email.toUpperCase().includes(this.debounceString.toUpperCase()));
         },
+    },
+    methods: {
         sortByName() {
-            this.users_data.sort((a,b) => a.name.localeCompare(b.name))
-            return this.users_data
+            this.sort = !this.sort
+            if (this.sort) {
+                return this.usersList.sort((a,b) => a.name.localeCompare(b.name))
+            } else {
+                return this.usersList.sort((b,a) => a.name.localeCompare(b.name))
+            }
         },
         sortByUserName() {
-            this.users_data.sort((a,b) => a.username.localeCompare(b.username))
+            this.sort = !this.sort
+            if (this.sort) {
+                return this.usersList.sort((a,b) => a.username.localeCompare(b.username))
+            } else {
+                return this.usersList.sort((b,a) => a.username.localeCompare(b.username))
+            }
         },
-        // debounce(fn, ms = 500) {
-        //     let timeout;
-        //      return () => {
-        //         clearTimeout(timeout);
-        //         timeout = setTimeout(fn, ms)
-        //     }
-        // },
     },
-
 }
 </script>
 
-<style>
+<style scoped>
+.input_wrapp {
+    text-align: center;
+}
 .search_input {
     margin: 5px;
 }
-.v-table {
-    max-width: 900px;
-    margin: 0 auto;
+.table{
+	border: 1px solid #eee;
+	table-layout: fixed;
+	width: 100%;
+	margin-bottom: 20px;
+    margin-top: 20px;
 }
-.v-table__header {
-    display: flex;
-    justify-content: space-around;
-    border-bottom: solid 1px #e7e7e7;
-
+.table th {
+	font-weight: bold;
+	padding: 5px;
+	background: #efefef;
+	border: 1px solid #dddddd;
 }
-.v-table__header p {
-    display: flex;
-    align-items: center;
-    flex-basis: 25%;
-    text-align: left;
-    cursor: pointer;
+.table td{
+	padding: 5px 10px;
+	border: 1px solid #eee;
+	text-align: left;
 }
 .v-table__pagination {
     display: flex;

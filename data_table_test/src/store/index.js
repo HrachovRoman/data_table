@@ -1,44 +1,52 @@
 import { createStore } from 'vuex'
-import axios from 'axios'
+import UsersService from '@/services/users.service';
 
 export default createStore({
   state: {
     users: [],
-    userFiltered: []
+    userId: []
   },
   mutations: {
-    SET_USERS_TO_VUEX (state, users)  {
-      state.users = users;
+    REMOVE_ID (state, id) {
+      state.users = state.users.filter((user) => user.id !== id);
     },
-    DEBOUNCE_INPUT (state, value) {
-      if (value === '') {
-        state.userFiltered = state.users;
-       } else { 
-        state.userFiltered = state.users
-        .filter(user => user.email.toLowerCase() 
-        .includes(value.toLowerCase()));
-      }
-
-    } 
+    SET_USERS_LIST(state, payload) {
+      state.users = payload;
+    },
+    SET_USER_ID(state, payload) {
+      state.userId = payload;
+    },
   },
-  
   actions: {
-    GET_USERS_FROM_API({commit}) {
-      return axios ('https://jsonplaceholder.typicode.com/users', {
-        method: 'GET'
-      })
-      .then((response) =>{
-        commit ('SET_USERS_TO_VUEX', response.data)
+    getUsersFromApi({commit}, pageNumber) {
+      return new Promise ((resolve, reject) => {
+        UsersService
+          .usersList(pageNumber)
+          .then(response => {
+            commit('SET_USERS_LIST', response.data.users);
+            return resolve(response.data);
+          })
+          .catch(error => reject(error));
       });
-    }
+    },
+    getIdUser({commit}, id) {
+      return new Promise ((resolve, reject) => {
+        UsersService
+          .userId(id)
+          .then(response => {
+            commit('SET_USER_ID', response.data);
+            return resolve(response.data);
+          })
+          .catch(error => reject(error));
+      });
+    },
   },
-
   getters: {
-    USERS(state) {
+    getUsersList(state){
       return state.users;
     },
-    USERS_FILTERED(state) {
-      return state.userFiltered;
-    }
+    getUserId(state) {
+      return state.userId;
+    },
   }
 })

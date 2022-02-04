@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@ocrv/vue-tailwind-pagination": "^0.0.4",
     "axios": "^0.25.0",
     "core-js": "^3.6.5",
     "lodash": "^4.17.21",
@@ -20,6 +21,7 @@
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0"
+    "@vue/compiler-sfc": "^3.0.0",
+    "dotenv-webpack": "^7.1.0"
   }
 }
